@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>TOTN 生成器</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+  body {
+    font-family: 'Roboto Mono', monospace;
+    background: linear-gradient(135deg, #0f0f1f, #1a1a33);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    min-height: 100vh;
+  }
+
+  .container {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    width: 420px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #00e0ff;
+    text-shadow: 0 0 10px #00e0ff;
+  }
+
+  label {
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #a0a0a0;
+  }
+
+  input, button {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+  }
+
+  input {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  button {
+    background: linear-gradient(90deg, #00e0ff, #0066ff);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0,224,255,0.5);
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0,224,255,0.8);
+  }
+
+  .output {
+    margin-top: 20px;
+    font-size: 18px;
+    word-break: break-all;
+    background: rgba(0,0,0,0.25);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0,224,255,0.5);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>TOTN 生成器</h2>
+
+  <label>日期 (YYYYMMDD):</label>
+  <input type="text" id="date">
+
+  <label>当天序号 (00-99):</label>
+  <input type="number" id="seq" min="0" max="99" value="01">
+
+  <label>TOTN 版本 (00-99):</label>
+  <input type="number" id="version" min="0" max="99" value="01">
+
+  <label>类型/作用 (00-99):</label>
+  <input type="number" id="type" min="0" max="99" value="01">
+
+  <label>作用码 (00-99):</label>
+  <input type="number" id="func" min="0" max="99" value="01">
+
+  <button onclick="generateTOTN()">生成 TOTN</button>
+
+  <div class="output" id="totnOutput"></div>
+  <button onclick="copyTOTN()">复制 TOTN</button>
+</div>
+
+<script>
+  // 默认当天日期
+  document.getElementById('date').value = new Date().toISOString().slice(0,10).replace(/-/g,'');
+
+  function generateTOTN() {
+    let dateNum = parseInt(document.getElementById('date').value); // YYYYMMDD
+    const fixedCode = 462675; // 固定码数字
+    const combinedDate = dateNum + fixedCode; // 数字相加
+
+    const seq = pad2(document.getElementById('seq').value);
+    const version = pad2(document.getElementById('version').value);
+    const type = pad2(document.getElementById('type').value);
+    const func = pad2(document.getElementById('func').value);
+
+    // 确认码 = seq+version+type+func数字总和 mod 100
+    const sum = sumDigits(seq + version + type + func);
+    const confirmCode = pad2(sum % 100);
+
+    // 生成 TOTN
+    const totn = combinedDate.toString() + seq + version + type + confirmCode + func;
+
+    document.getElementById('totnOutput').textContent = totn;
+  }
+
+  function pad2(num) { return num.toString().padStart(2,'0'); }
+  function sumDigits(str) { return str.split('').reduce((acc, c) => acc + parseInt(c||0), 0); }
+
+  function copyTOTN() {
+    const output = document.getElementById('totnOutput');
+    navigator.clipboard.writeText(output.textContent).then(() => alert('已复制 TOTN'));
+  }
+</script>
+</body>
+</html>
