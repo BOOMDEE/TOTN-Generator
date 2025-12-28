@@ -4,42 +4,39 @@
 <meta charset="UTF-8">
 <title>TOTN 生成器</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
-  body {
+body {
     font-family: 'Roboto Mono', monospace;
-    background: linear-gradient(135deg, #0f0f1f, #1a1a33);
-    color: #fff;
     display: flex;
     justify-content: center;
     padding-top: 50px;
     min-height: 100vh;
-  }
+    transition: background 0.3s, color 0.3s;
+}
 
-  .container {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
+.container {
+    backdrop-filter: blur(15px);
     padding: 30px 40px;
     border-radius: 20px;
-    box-shadow: 0 0 40px rgba(0,0,0,0.6);
-    width: 420px;
-  }
+    width: 450px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
 
-  h2 {
+h2 {
     text-align: center;
     margin-bottom: 25px;
-    color: #00e0ff;
-    text-shadow: 0 0 10px #00e0ff;
-  }
+    transition: color 0.3s, text-shadow 0.3s;
+}
 
-  label {
+label {
     display: block;
     margin-top: 12px;
     font-size: 14px;
-    color: #a0a0a0;
-  }
+    transition: color 0.3s;
+}
 
-  input, button {
+select, input, button {
     width: 100%;
     margin-top: 6px;
     padding: 10px;
@@ -47,97 +44,169 @@
     border-radius: 10px;
     border: none;
     outline: none;
-  }
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
 
-  input {
+select, input {
     background: rgba(255,255,255,0.1);
-    color: #fff;
-  }
+    color: inherit;
+}
 
-  button {
-    background: linear-gradient(90deg, #00e0ff, #0066ff);
-    color: #fff;
+button {
     font-weight: bold;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 15px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0,224,255,0.5);
-  }
+}
 
-  button:hover {
+button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(0,224,255,0.8);
-  }
+}
 
-  .output {
+.output {
     margin-top: 20px;
     font-size: 18px;
     word-break: break-all;
-    background: rgba(0,0,0,0.25);
     padding: 15px;
     border-radius: 12px;
     text-align: center;
     letter-spacing: 1px;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* 深色主题 */
+body.dark {
+    background: linear-gradient(135deg,#0f0f1f,#1a1a33);
+    color: #fff;
+}
+
+body.dark .container {
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+body.dark h2 { color: #00e0ff; text-shadow: 0 0 10px #00e0ff; }
+body.dark label { color: #a0a0a0; }
+body.dark button {
+    background: linear-gradient(90deg,#00e0ff,#0066ff);
+    color: #fff;
     box-shadow: 0 0 10px rgba(0,224,255,0.5);
-  }
+}
+body.dark .output { background: rgba(0,0,0,0.25); box-shadow: 0 0 10px rgba(0,224,255,0.5); }
+
+/* 浅色主题 */
+body.light {
+    background: linear-gradient(135deg,#f0f0f0,#dcdcdc);
+    color: #111;
+}
+
+body.light .container {
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+}
+
+body.light h2 { color: #0066ff; text-shadow: none; }
+body.light label { color: #333; }
+body.light button {
+    background: linear-gradient(90deg,#66ccff,#3399ff);
+    color: #fff;
+    box-shadow: 0 0 5px rgba(0,102,255,0.3);
+}
+body.light .output { background: rgba(255,255,255,0.6); box-shadow: 0 0 5px rgba(0,102,255,0.2); }
 </style>
 </head>
-<body>
+<body class="dark">
 <div class="container">
-  <h2>TOTN 生成器</h2>
+    <h2>TOTN 生成器</h2>
 
-  <label>日期 (YYYYMMDD):</label>
-  <input type="text" id="date">
+    <button onclick="toggleTheme()">切换深浅色主题</button>
 
-  <label>当天序号 (00-99):</label>
-  <input type="number" id="seq" min="0" max="99" value="01">
+    <label>日期 (YYYYMMDD)</label>
+    <input type="text" id="date">
 
-  <label>TOTN 版本 (00-99):</label>
-  <input type="number" id="version" min="0" max="99" value="01">
+    <label>当日序号</label>
+    <select id="seq">
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+    </select>
 
-  <label>类型/作用 (00-99):</label>
-  <input type="number" id="type" min="0" max="99" value="01">
+    <label>版本号</label>
+    <select id="version">
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+    </select>
 
-  <label>作用码 (00-99):</label>
-  <input type="number" id="func" min="0" max="99" value="01">
+    <label>类型码</label>
+    <select id="type">
+        <option value="01">01 - 签名</option>
+        <option value="02">02 - 礼物</option>
+        <option value="03">03 - 文件</option>
+        <option value="04">04 - 任务</option>
+        <option value="05">05 - 冷存储任务</option>
+        <option value="06">06 - 批次</option>
+        <option value="07">07 - 活动</option>
+        <option value="08">08 - 特殊项目</option>
+    </select>
 
-  <button onclick="generateTOTN()">生成 TOTN</button>
+    <label>优先级码 (P)</label>
+    <select id="priority">
+        <option value="0">0 - 不适用</option>
+        <option value="1">1 - 低</option>
+        <option value="2">2 - 中低</option>
+        <option value="3">3 - 中</option>
+        <option value="4">4 - 中高</option>
+        <option value="5">5 - 高</option>
+        <option value="6">6 - 很高</option>
+        <option value="7">7 - 紧急</option>
+        <option value="8">8 - 超紧急</option>
+        <option value="9">9 - 极高</option>
+    </select>
 
-  <div class="output" id="totnOutput"></div>
-  <button onclick="copyTOTN()">复制 TOTN</button>
+    <button onclick="generateTOTN()">生成 TOTN</button>
+    <div class="output" id="totnOutput"></div>
+    <button onclick="copyTOTN()">复制 TOTN</button>
 </div>
 
 <script>
-  // 默认当天日期
-  document.getElementById('date').value = new Date().toISOString().slice(0,10).replace(/-/g,'');
+document.getElementById('date').value = new Date().toISOString().slice(0,10).replace(/-/g,'');
 
-  function generateTOTN() {
-    let dateNum = parseInt(document.getElementById('date').value); // YYYYMMDD
-    const fixedCode = 462675; // 固定码数字
-    const combinedDate = dateNum + fixedCode; // 数字相加
+function pad2(num){ return num.toString().padStart(2,'0'); }
+function sumDigits(str){ return str.split('').reduce((acc,c)=>acc+parseInt(c||0),0); }
 
-    const seq = pad2(document.getElementById('seq').value);
-    const version = pad2(document.getElementById('version').value);
-    const type = pad2(document.getElementById('type').value);
-    const func = pad2(document.getElementById('func').value);
+function generateTOTN(){
+    let dateNum = parseInt(document.getElementById('date').value);
+    const fixedCode = 462675;
+    const D = dateNum + fixedCode;
 
-    // 确认码 = seq+version+type+func数字总和 mod 100
-    const sum = sumDigits(seq + version + type + func);
-    const confirmCode = pad2(sum % 100);
+    const S = pad2(document.getElementById('seq').value);
+    const V = pad2(document.getElementById('version').value);
+    const T = pad2(document.getElementById('type').value);
+    const P = pad2(document.getElementById('priority').value);
 
-    // 生成 TOTN
-    const totn = combinedDate.toString() + seq + version + type + confirmCode + func;
+    const C = pad2(sumDigits(S+V+T+P)%100);
 
+    const totn = D.toString() + S + V + T + C + P;
     document.getElementById('totnOutput').textContent = totn;
-  }
+}
 
-  function pad2(num) { return num.toString().padStart(2,'0'); }
-  function sumDigits(str) { return str.split('').reduce((acc, c) => acc + parseInt(c||0), 0); }
-
-  function copyTOTN() {
+function copyTOTN(){
     const output = document.getElementById('totnOutput');
-    navigator.clipboard.writeText(output.textContent).then(() => alert('已复制 TOTN'));
-  }
+    navigator.clipboard.writeText(output.textContent).then(()=>alert('已复制 TOTN'));
+}
+
+function toggleTheme(){
+    document.body.classList.toggle('dark');
+    document.body.classList.toggle('light');
+}
 </script>
 </body>
 </html>
